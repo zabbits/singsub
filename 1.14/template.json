@@ -1,0 +1,375 @@
+{
+  "log": {
+    "level": "info",
+    "timestamp": true
+  },
+  "experimental": {
+    "cache_file": {
+      "enabled": true,
+      "store_fakeip": true,
+      "store_dns": true
+    }
+  },
+  "services": [
+    {
+      "type": "api",
+      "tag": "api-service",
+      "listen": "127.0.0.1",
+      "listen_port": 21221,
+      "secret": "",
+      "access_control_allow_private_network": true,
+      "dashboard": {
+        "enabled": true
+      }
+    }
+  ],
+  "dns": {
+    "servers": [
+      {
+        "tag": "cf",
+        "type": "https",
+        "server": "1.1.1.1",
+        "detour": "🌐 代理选择",
+        "tls": {
+          "server_name": "cloudflare-dns.com"
+        }
+      },
+      {
+        "tag": "ali",
+        "type": "https",
+        "server": "223.5.5.5",
+        "tls": {
+          "server_name": "dns.alidns.com"
+        }
+      },
+      {
+        "tag": "local",
+        "type": "local"
+      },
+      {
+        "tag": "ts",
+        "type": "tailscale",
+        "endpoint": "ts",
+        "accept_default_resolvers": false,
+        "accept_search_domain": true
+      },
+      {
+        "type": "fakeip",
+        "tag": "fakeip",
+        "inet4_range": "198.18.0.0/15",
+        "inet6_range": "fc00::/18"
+      },
+      {
+        "type": "https",
+        "tag": "jeeyio",
+        "server": "jeeyio.com",
+        "path": "/api/dns-query",
+        "tls": {
+          "server_name": "jeeyio.com"
+        },
+        "domain_resolver": "ali"
+      }
+    ],
+    "rules": [
+      {
+        "preferred_by": "ts",
+        "server": "ts"
+      },
+      {
+        "rule_set": "geosite-private",
+        "server": "local"
+      },
+      {
+        "clash_mode": "Direct",
+        "server": "ali"
+      },
+      {
+        "clash_mode": "Global",
+        "server": "cf"
+      },
+      {
+        "rule_set": [
+          "rule-local",
+          "geosite-cn"
+        ],
+        "server": "ali"
+      },
+      {
+        "query_type": [
+          "A",
+          "AAAA"
+        ],
+        "action": "evaluate",
+        "server": "cf",
+        "client_subnet": "218.94.101.0/24"
+      },
+      {
+        "match_response": true,
+        "rule_set": "ts_ip",
+        "action": "respond"
+      },
+      {
+        "match_response": true,
+        "rule_set": "geoip-cn",
+        "action": "respond"
+      },
+      {
+        "query_type": [
+          "A",
+          "AAAA"
+        ],
+        "server": "fakeip"
+      }
+    ],
+    "final": "cf",
+    "strategy": "prefer_ipv4",
+    "reverse_mapping": true,
+    "timeout": "5s",
+    "cache_capacity": 32768,
+    "optimistic": {
+      "enabled": true,
+      "timeout": "3d"
+    }
+  },
+  "inbounds": [
+    {
+      "type": "tun",
+      "address": [
+        "172.19.0.1/30"
+      ],
+      "dns_mode": "hijack",
+      "auto_route": true,
+      "stack": "system",
+      "udp_timeout": "5m",
+      "strict_route": true
+    }
+  ],
+  "http_clients": [
+    {
+      "tag": "default",
+      "detour": "🌐 代理选择"
+    }
+  ],
+  "route": {
+    "final": "🌐 代理选择",
+    "auto_detect_interface": true,
+    "default_domain_resolver": {
+      "server": "ali"
+    },
+    "default_http_client": "default",
+    "rules": [
+      {
+        "rule_set": "direct_ip",
+        "outbound": "direct"
+      },
+      {
+        "port": 53,
+        "action": "hijack-dns"
+      },
+      {
+        "preferred_by": "ts",
+        "outbound": "ts"
+      },
+      {
+        "rule_set": "ts_ip",
+        "outbound": "ts"
+      },
+      {
+        "network": "icmp",
+        "outbound": "direct"
+      },
+      {
+        "action": "sniff",
+        "timeout": "300ms"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "type": "logical",
+        "mode": "or",
+        "rules": [
+          {
+            "port": [
+              853,
+              784,
+              8853
+            ]
+          },
+          {
+            "network": "udp",
+            "port": 443
+          },
+          {
+            "protocol": "stun"
+          }
+        ],
+        "action": "reject"
+      },
+      {
+        "protocol": "bittorrent",
+        "outbound": "direct"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "rule_set": "geosite-private",
+        "outbound": "direct"
+      },
+      {
+        "clash_mode": "Global",
+        "outbound": "🌐 代理选择"
+      },
+      {
+        "clash_mode": "Direct",
+        "outbound": "direct"
+      },
+      {
+        "rule_set": "rule-proxy",
+        "outbound": "🌐 代理选择"
+      },
+      {
+        "rule_set": "rule-local",
+        "outbound": "direct"
+      },
+      {
+        "rule_set": "geosite-category-ai-!cn",
+        "outbound": "🤖 AI 服务"
+      },
+      {
+        "rule_set": "geosite-telegram",
+        "outbound": "✈️ Telegram"
+      },
+      {
+        "rule_set": "geosite-google",
+        "outbound": "🔍 Google"
+      },
+      {
+        "rule_set": "geosite-apple",
+        "outbound": "🍎 Apple"
+      },
+      {
+        "rule_set": "geosite-bilibili",
+        "outbound": "📺 哔哩哔哩"
+      },
+      {
+        "rule_set": "geosite-netflix",
+        "outbound": "🎬 Netflix"
+      },
+      {
+        "rule_set": "geosite-bahamut",
+        "outbound": "🎮 巴哈姆特"
+      },
+      {
+        "rule_set": "geosite-youtube",
+        "outbound": "▶️ YouTube"
+      },
+      {
+        "rule_set": "geosite-geolocation-!cn",
+        "outbound": "🌐 代理选择"
+      },
+      {
+        "rule_set": "geosite-cn",
+        "outbound": "🇨🇳 国内服务"
+      },
+      {
+        "rule_set": "geoip-cn",
+        "outbound": "🇨🇳 国内服务"
+      }
+    ],
+    "rule_set": [
+      {
+        "type": "inline",
+        "tag": "direct_ip",
+        "rules": [
+          {
+            "ip_cidr": [
+              "127.0.0.1",
+              "198.10.1.0/24"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "inline",
+        "tag": "rule-local",
+        "rules": [
+          {
+            "domain_suffix": [
+              "jssdbmt.com",
+              "g.qll-times.com",
+              "498.net",
+              "fengniaochuangxin.com",
+              "duibatest.com.cn",
+              "ejiaofei.cn",
+              "chengquan.cn",
+              "tongdatech.com"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "inline",
+        "tag": "rule-proxy",
+        "rules": [
+          {
+            "domain_suffix": [
+              "github.com",
+              "gaze.run"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "inline",
+        "tag": "ts_ip",
+        "rules": [
+          {
+            "ip_cidr": [
+              "100.64.0.0/10",
+              "fd7a:115c:a1e0::/48"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "remote",
+        "tag": [
+          "geosite-category-ai-!cn",
+          "geosite-apple",
+          "geosite-bahamut",
+          "geosite-bilibili",
+          "geosite-cn",
+          "geosite-google",
+          "geosite-netflix",
+          "geosite-private",
+          "geosite-geolocation-!cn",
+          "geosite-telegram",
+          "geosite-youtube"
+        ],
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/{tag}.srs",
+        "update_interval": "1d"
+      },
+      {
+        "type": "remote",
+        "tag": "geoip-cn",
+        "format": "binary",
+        "url": "https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
+        "update_interval": "1d"
+      }
+    ]
+  },
+  "outbounds": [],
+  "endpoints": [
+    {
+      "tag": "ts",
+      "type": "tailscale",
+      "accept_routes": true,
+      "auth_key": ""
+    }
+  ]
+}
