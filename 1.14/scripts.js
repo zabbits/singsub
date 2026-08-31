@@ -756,6 +756,7 @@ function produceCompatibleNodes(proxies, rawOptions, produceProxy) {
   }
 
   const resolverRules = parseResolverRules(rawOptions?.resolver);
+  const rmSsNet = toBoolean(rawOptions?.rmSsNet, false);
   const compatibleProxies = [];
   const produced = [];
   const skipped = [];
@@ -774,6 +775,7 @@ function produceCompatibleNodes(proxies, rawOptions, produceProxy) {
 
       applySpkiPinsForConversion(proxy, rawOptions);
       const items = sanitizeProducedItems(produceProxy(proxy));
+      if (rmSsNet) removeShadowsocksNetwork(items);
       applyDomainResolverRules(items, resolverRules);
       if (items.length === 0) {
         throw new Error("Sub-Store 没有生成 sing-box 出站");
@@ -805,6 +807,12 @@ function produceCompatibleNodes(proxies, rawOptions, produceProxy) {
   }
 
   return { proxies: compatibleProxies, produced, skipped, indexes, bundles };
+}
+
+function removeShadowsocksNetwork(items) {
+  for (const item of items) {
+    if (item.type === "shadowsocks") delete item.network;
+  }
 }
 
 function applySpkiPinsForConversion(proxy, rawOptions) {

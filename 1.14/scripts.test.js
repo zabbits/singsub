@@ -496,6 +496,31 @@ test("移除 insecure 后继续转换，并隔离转换失败和重复 tag", () 
   );
 });
 
+test("rmSsNet 只移除 Shadowsocks 出站的 network", () => {
+  const proxies = [
+    { name: "SS node", type: "ss" },
+    { name: "Trojan node", type: "trojan" },
+  ];
+  const produceProxy = (proxy) => [
+    {
+      type: proxy.type === "ss" ? "shadowsocks" : proxy.type,
+      tag: proxy.name,
+      network: "tcp",
+    },
+  ];
+
+  const kept = produceCompatibleNodes(proxies, {}, produceProxy);
+  assert.equal(kept.produced[0].network, "tcp");
+
+  const removed = produceCompatibleNodes(
+    proxies,
+    { rmSsNet: true },
+    produceProxy,
+  );
+  assert.equal("network" in removed.produced[0], false);
+  assert.equal(removed.produced[1].network, "tcp");
+});
+
 test("resolver 只应用到匹配域名的节点、辅助出站和 WireGuard endpoint", () => {
   const conversion = produceCompatibleNodes(
     [

@@ -18,6 +18,7 @@
 | `includeNodesInMain` | `false` | 是否在总代理选择器中直接列出具体节点 |
 | `countryOrder` | 与 `countries` 相同 | 普通国家组的排列顺序 |
 | `includeUnsupported` | `false` | 是否让 Sub-Store 尝试输出未支持的节点协议 |
+| `rmSsNet` | `false` | 是否移除 Shadowsocks 出站中的 `network` 字段 |
 
 `landings`、`countries` 和 `relay` 接受数组或 JSON 数组字符串；`landings` 还接受逗号或换行分隔字符串。
 
