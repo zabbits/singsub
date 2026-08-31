@@ -79,7 +79,7 @@ test("短国家代码必须是独立标记，避免子串误判", () => {
   assert.equal(detectCountry("Russia Moscow"), undefined);
 });
 
-test("生成手动国家组并把具体代理组排在前面", () => {
+test("生成手动国家组并把代理选择排在最前面", () => {
   const source = [
     { name: "HK Edge 01" },
     { name: "HK Edge 02" },
@@ -137,9 +137,10 @@ test("生成手动国家组并把具体代理组排在前面", () => {
   }
 
   assert.deepEqual(
-    config.outbounds.slice(0, PROXY_SERVICE_TAGS.length + DIRECT_SERVICE_TAGS.length)
+    config.outbounds.slice(0, 1 + PROXY_SERVICE_TAGS.length + DIRECT_SERVICE_TAGS.length)
       .map((outbound) => outbound.tag),
     [
+      "🌐 代理选择",
       "🤖 AI 服务",
       "✈️ Telegram",
       "🔍 Google",

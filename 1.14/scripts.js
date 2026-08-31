@@ -1153,8 +1153,8 @@ function buildConfig(sourceNodes, produced, rawOptions = {}, getISO = () => unde
   );
 
   const generated = [
-    ...serviceOutbounds,
     createSelector(mainTag, mainMembers, mainMembers[0]),
+    ...serviceOutbounds,
     ...countryOutbounds,
     ...relayOutbounds,
     { type: "direct", tag: DIRECT_OUTBOUND_TAG },
