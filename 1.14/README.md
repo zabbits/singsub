@@ -1,3 +1,8 @@
+# 配置模板
+
+- `template.json`：FakeIP 模板。
+- `template-realip.json`：RealIP 模板，返回真实 DNS 解析结果，保留原有分流、Tailscale 和 DNS ECS 配置。
+
 # scripts 参数
 
 | 参数 | 默认值 | 作用 |
