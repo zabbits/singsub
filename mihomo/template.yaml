@@ -5,11 +5,10 @@
 rule-anchor:
   P: &P {type: http, interval: 0, health-check: {enable: true, url: 'https://www.gstatic.com/generate_204', interval: 300}, exclude-filter: "官网|剩余|流量|套餐|订阅|直连|到期时间|GB|Expire Date|Traffic|ExpireDate", proxy: 直连}
   # 节点选择
-  G1: &G1 {type: select, proxies: [默认代理, 香港手动, 日本手动, 台湾手动, 狮城手动, 美国手动, 香港自动, 日本自动, 台湾自动, 狮城自动, 美国自动, 全部手动, 直连]}
-  S1: &S1 {type: select, proxies: [香港手动, 日本手动, 台湾手动, 狮城手动, 美国手动, 香港自动, 日本自动, 台湾自动, 狮城自动, 美国自动, 全部手动, 直连]}
-  S2: &S2 {type: select, proxies: [日本手动, 香港手动, 台湾手动, 狮城手动, 美国手动, 香港自动, 日本自动, 台湾自动, 狮城自动, 美国自动, 全部手动, 直连]}
-  S3: &S3 {type: select, proxies: [美国手动, 香港手动, 日本手动, 台湾手动, 狮城手动, 香港自动, 日本自动, 台湾自动, 狮城自动, 美国自动, 全部手动, 直连]}
-  S5: &S5 {type: url-test, proxies: [直连, DIRECT], interval: 3600, lazy: true, url: "http://connect.rom.miui.com/generate_204"}
+  G1: &G1 {type: select, proxies: [默认代理, 香港手动, 日本手动, 台湾手动, 狮城手动, 美国手动, 全部手动, 直连]}
+  S1: &S1 {type: select, proxies: [香港手动, 日本手动, 台湾手动, 狮城手动, 美国手动, 全部手动, 直连]}
+  S2: &S2 {type: select, proxies: [日本手动, 香港手动, 台湾手动, 狮城手动, 美国手动, 全部手动, 直连]}
+  S3: &S3 {type: select, proxies: [美国手动, 香港手动, 日本手动, 台湾手动, 狮城手动, 全部手动, 直连]}
   # 节点筛选
   HK: &HK "(?i)(?=.*(港|HK|Hong))^((?!(台|日|韩|新|深|美)).)*$"
   JP: &JP "(?i)(?=.*(日|JP|Japan))^((?!(港|台|韩|新|美)).)*$"
@@ -19,9 +18,7 @@ rule-anchor:
   Exclude: &Exclude "^((?!(官网|剩余|流量|套餐|订阅|到期时间|直连|GB|Expire Date|Traffic|ExpireDate)).)*$"
   # 策略组
   SD: &SD {type: select, include-all: true}
-  URL: &URL {type: url-test, include-all: true, tolerance: 50, interval: 300, lazy: true, url: 'https://www.gstatic.com/generate_204'}
   # ICON
-  Auto: &Auto "https://ghfast.top/https://raw.githubusercontent.com/s0lnce/mofish-icon/refs/heads/main/mihomo/pure/corner/auto.png"
   All: &All "https://ghfast.top/https://raw.githubusercontent.com/s0lnce/mofish-icon/refs/heads/main/mihomo/pure/corner/all.png"
   # 规则集
   ip: &ip {type: http, interval: 86400, behavior: ipcidr, format: mrs}
@@ -150,13 +147,7 @@ proxy-groups:
   - {name: 台湾手动, <<: *SD, filter: *TW, icon: "https://ghfast.top/https://raw.githubusercontent.com/s0lnce/mofish-icon/refs/heads/main/mihomo/flag/corner/taiwan.png"}
   - {name: 狮城手动, <<: *SD, filter: *SG, icon: "https://ghfast.top/https://raw.githubusercontent.com/s0lnce/mofish-icon/refs/heads/main/mihomo/flag/corner/singapore.png"}
   - {name: 美国手动, <<: *SD, filter: *US, icon: "https://ghfast.top/https://raw.githubusercontent.com/s0lnce/mofish-icon/refs/heads/main/mihomo/flag/corner/usa.png"}
-  - {name: 香港自动, <<: *URL, filter: *HK, icon: *Auto}
-  - {name: 日本自动, <<: *URL, filter: *JP, icon: *Auto}
-  - {name: 台湾自动, <<: *URL, filter: *TW, icon: *Auto}
-  - {name: 狮城自动, <<: *URL, filter: *SG, icon: *Auto}
-  - {name: 美国自动, <<: *URL, filter: *US, icon: *Auto}
   - {name: 全部手动, <<: *SD, filter: *Exclude, icon: *All}
-  - {name: 延迟辅助, <<: *S5, icon: *Auto}
   - {name: GLOBAL, <<: *G1, icon: "https://ghfast.top/https://raw.githubusercontent.com/s0lnce/mofish-icon/refs/heads/main/mihomo/pure/corner/all.png"}
 
 rules:
