@@ -11,11 +11,11 @@ rule-anchor:
   S3: &S3 {type: select, proxies: [美国故转, 香港故转, 日本故转, 台湾故转, 狮城故转, 香港手动, 日本手动, 台湾手动, 狮城手动, 美国手动, 香港自动, 日本自动, 台湾自动, 狮城自动, 美国自动, 全部自动, 全部手动, 直连]}
   S5: &S5 {type: url-test, proxies: [直连, DIRECT], interval: 3600, lazy: true, url: "http://connect.rom.miui.com/generate_204"}
   # 节点筛选
-  HK: &HK "(?=.*(港|HK|(?i)Hong))^((?!(台|日|韩|新|深|美)).)*$"
-  JP: &JP "(?=.*(日|JP|(?i)Japan))^((?!(港|台|韩|新|美)).)*$"
-  TW: &TW "(?=.*(台|TW|(?i)Taiwan))^((?!(港|韩|新|美)).)*$"
-  SG: &SG "(?=.*(新加坡|坡|狮城|SG|Singapore))^((?!(港|台|日|韩|ZJ)).)*$"
-  US: &US "(?=.*(美|US|(?i)States|America))^((?!(港|台|日|韩|新)).)*$"
+  HK: &HK "(?i)(?=.*(港|HK|Hong))^((?!(台|日|韩|新|深|美)).)*$"
+  JP: &JP "(?i)(?=.*(日|JP|Japan))^((?!(港|台|韩|新|美)).)*$"
+  TW: &TW "(?i)(?=.*(台|TW|Taiwan))^((?!(港|韩|新|美)).)*$"
+  SG: &SG "(?i)(?=.*(新加坡|坡|狮城|SG|Singapore))^((?!(港|台|日|韩|ZJ)).)*$"
+  US: &US "(?i)(?=.*(美|US|States|America))^((?!(港|台|日|韩|新)).)*$"
   Exclude: &Exclude "^((?!(官网|剩余|流量|套餐|订阅|到期时间|直连|GB|Expire Date|Traffic|ExpireDate)).)*$"
   # 策略组
   SD: &SD {type: select, include-all: true}
