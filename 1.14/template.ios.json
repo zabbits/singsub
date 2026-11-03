@@ -6,7 +6,6 @@
   "experimental": {
     "cache_file": {
       "enabled": true,
-      "store_fakeip": true,
       "store_dns": true
     }
   },
@@ -39,12 +38,6 @@
         "endpoint": "tsep",
         "accept_default_resolvers": true,
         "accept_search_domain": true
-      },
-      {
-        "type": "fakeip",
-        "tag": "fakeip",
-        "inet4_range": "198.18.0.0/15",
-        "inet6_range": "fc00::/18"
       },
       {
         "type": "https",
@@ -86,26 +79,8 @@
           "A",
           "AAAA"
         ],
-        "action": "evaluate",
         "server": "cf",
         "client_subnet": "218.94.101.0/24"
-      },
-      {
-        "match_response": true,
-        "rule_set": "ts_ip",
-        "action": "respond"
-      },
-      {
-        "match_response": true,
-        "rule_set": "geoip-cn",
-        "action": "respond"
-      },
-      {
-        "query_type": [
-          "A",
-          "AAAA"
-        ],
-        "server": "fakeip"
       }
     ],
     "final": "cf",
