@@ -134,7 +134,7 @@
       },
       {
         "rule_set": "ts_ip",
-        "outbound": "ts"
+        "outbound": "tsep"
       },
       {
         "network": "icmp",
