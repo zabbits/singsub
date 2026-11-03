@@ -52,7 +52,7 @@
     ],
     "rules": [
       {
-        "preferred_by": "tsep",
+        "preferred_by": "tsdns",
         "server": "tsdns"
       },
       {
