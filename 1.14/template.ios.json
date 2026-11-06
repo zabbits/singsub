@@ -100,10 +100,7 @@
         "172.19.0.1/30"
       ],
       "dns_mode": "hijack",
-      "auto_route": true,
-      "stack": "system",
-      "udp_timeout": "5m",
-      "strict_route": true
+      "auto_route": true
     }
   ],
   "http_clients": [

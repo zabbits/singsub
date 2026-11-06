@@ -114,8 +114,6 @@
       ],
       "dns_mode": "hijack",
       "auto_route": true,
-      "stack": "system",
-      "udp_timeout": "5m",
       "strict_route": true
     }
   ],
